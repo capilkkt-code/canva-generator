@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canva Code & AppScript Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .code-editor {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .syntax-highlight {
+            color: #569cd6;
+        }
+        .animate-pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gray-50">
+    <div class="gradient-bg min-h-full">
+        <!-- Header -->
+        <header class="bg-white/10 backdrop-blur-md border-b border-white/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">⚡</span>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-white">Code Generator Pro</h1>
+                            <p class="text-white/80 text-sm">Canva Code & AppScript Generator</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="clearAll" class="px-4 py-2 bg-red-500/20 text-white rounded-lg hover:bg-red-500/30 transition-colors">
+                            🗑️ Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Generator Selection -->
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-8 border border-white/20">
+                <h2 class="text-xl font-semibold text-white mb-4">Pilih Generator</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button id="canvaCodeBtn" class="generator-btn bg-blue-500/20 hover:bg-blue-500/30 text-white p-4 rounded-lg border border-blue-300/30 transition-all">
+                        <div class="text-2xl mb-2">🎨</div>
+                        <div class="font-semibold">Canva Code</div>
+                        <div class="text-sm opacity-80">HTML/CSS/JS Generator</div>
+                    </button>
+                    <button id="appScriptBtn" class="generator-btn bg-green-500/20 hover:bg-green-500/30 text-white p-4 rounded-lg border border-green-300/30 transition-all">
+                        <div class="text-2xl mb-2">📜</div>
+                        <div class="font-semibold">Google AppScript</div>
+                        <div class="text-sm opacity-80">GAS Code Generator</div>
+                    </button>
+                    <button id="promptBtn" class="generator-btn bg-purple-500/20 hover:bg-purple-500/30 text-white p-4 rounded-lg border border-purple-300/30 transition-all">
+                        <div class="text-2xl mb-2">💡</div>
+                        <div class="font-semibold">Prompt Generator</div>
+                        <div class="text-sm opacity-80">AI Prompt Creator</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Panel - Input -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                    <h3 class="text-lg font-semibold text-white mb-4">Input Deskripsi</h3>
+                    <textarea id="inputDescription" 
+                              placeholder="Contoh: Buat aplikasi todo list dengan fitur tambah, edit, hapus, dan filter berdasarkan status..."
+                              class="w-full h-40 p-4 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                    
+                    <!-- Generator Options -->
+                    <div id="generatorOptions" class="mt-6 space-y-4">
+                        <!-- Canva Code Options -->
+                        <div id="canvaOptions" class="hidden">
+                            <h4 class="text-white font-medium mb-3">Opsi Canva Code</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex items-center space-x-2 text-white/80">
+                                    <input type="checkbox" id="responsive" checked class="rounded">
+                                    <span>Responsive Design</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-white/80">
+                                    <input type="checkbox" id="animations" class="rounded">
+                                    <span>Animasi</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-white/80">
+                                    <input type="checkbox" id="darkMode" class="rounded">
+                                    <span>Dark Mode</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-white/80">
+                                    <input type="checkbox" id="interactive" checked class="rounded">
+                                    <span>Interaktif</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- AppScript Options -->
+                        <div id="appScriptOptions" class="hidden">
+                            <h4 class="text-white font-medium mb-3">Opsi AppScript</h4>
+                            <select id="scriptType" class="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white">
+                                <option value="sheets">Google Sheets Script</option>
+                                <option value="docs">Google Docs Script</option>
+                                <option value="gmail">Gmail Script</option>
+                                <option value="drive">Google Drive Script</option>
+                                <option value="calendar">Google Calendar Script</option>
+                                <option value="forms">Google Forms Script</option>
+                            </select>
+                        </div>
+
+                        <!-- Prompt Options -->
+                        <div id="promptOptions" class="hidden">
+                            <h4 class="text-white font-medium mb-3">Tipe Prompt</h4>
+                            <select id="promptType" class="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white">
+                                <option value="canva">Canva Code Prompt</option>
+                                <option value="appscript">AppScript Prompt</option>
+                                <option value="general">General AI Prompt</option>
+                                <option value="creative">Creative Prompt</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="generateBtn" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105">
+                        <span id="generateText">🚀 Generate Code</span>
+                        <span id="loadingText" class="hidden">⏳ Generating...</span>
+                    </button>
+                </div>
+
+                <!-- Right Panel - Output -->
+                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">Generated Code</h3>
+                        <div class="flex space-x-2">
+                            <button id="copyBtn" class="px-3 py-1 bg-green-500/20 text-white rounded hover:bg-green-500/30 transition-colors text-sm">
+                                📋 Copy
+                            </button>
+                            <button id="downloadBtn" class="px-3 py-1 bg-blue-500/20 text-white rounded hover:bg-blue-500/30 transition-colors text-sm">
+                                💾 Download
+                            </button>
+                        </div>
+                    </div>
+                    <div id="outputContainer" class="h-96 bg-black/30 rounded-lg p-4 overflow-auto">
+                        <pre id="codeOutput" class="code-editor text-sm whitespace-pre-wrap">// Generated code akan muncul di sini...
+// Pilih generator dan masukkan deskripsi untuk memulai!</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Section -->
+            <div class="mt-8 bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                <h3 class="text-lg font-semibold text-white mb-4">Template Populer</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">📝 Todo List App</div>
+                        <div class="text-white/70 text-sm mt-1">Aplikasi manajemen tugas dengan CRUD</div>
+                    </button>
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">📊 Dashboard Analytics</div>
+                        <div class="text-white/70 text-sm mt-1">Dashboard dengan chart dan statistik</div>
+                    </button>
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">🛒 E-commerce Cart</div>
+                        <div class="text-white/70 text-sm mt-1">Keranjang belanja dengan checkout</div>
+                    </button>
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">📧 Email Automation</div>
+                        <div class="text-white/70 text-sm mt-1">Script otomasi email Gmail</div>
+                    </button>
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">📈 Sheets Data Processor</div>
+                        <div class="text-white/70 text-sm mt-1">Pengolah data Google Sheets</div>
+                    </button>
+                    <button class="template-btn text-left p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors border border-white/10">
+                        <div class="text-white font-medium">🎯 AI Prompt Builder</div>
+                        <div class="text-white/70 text-sm mt-1">Generator prompt untuk AI</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGenerator = 'canva';
+        
+        // Generator selection
+        document.getElementById('canvaCodeBtn').addEventListener('click', () => selectGenerator('canva'));
+        document.getElementById('appScriptBtn').addEventListener('click', () => selectGenerator('appscript'));
+        document.getElementById('promptBtn').addEventListener('click', () => selectGenerator('prompt'));
+
+        function selectGenerator(type) {
+            currentGenerator = type;
+            
+            // Update button states
+            document.querySelectorAll('.generator-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-white/50');
+            });
+            
+            if (type === 'canva') {
+                document.getElementById('canvaCodeBtn').classList.add('ring-2', 'ring-white/50');
+                document.getElementById('generateText').textContent = '🚀 Generate Canva Code';
+            } else if (type === 'appscript') {
+                document.getElementById('appScriptBtn').classList.add('ring-2', 'ring-white/50');
+                document.getElementById('generateText').textContent = '🚀 Generate AppScript';
+            } else {
+                document.getElementById('promptBtn').classList.add('ring-2', 'ring-white/50');
+                document.getElementById('generateText').textContent = '🚀 Generate Prompt';
+            }
+            
+            // Show/hide options
+            document.getElementById('canvaOptions').classList.toggle('hidden', type !== 'canva');
+            document.getElementById('appScriptOptions').classList.toggle('hidden', type !== 'appscript');
+            document.getElementById('promptOptions').classList.toggle('hidden', type !== 'prompt');
+        }
+
+        // Initialize with Canva Code selected
+        selectGenerator('canva');
+
+        // Generate button
+        document.getElementById('generateBtn').addEventListener('click', generateCode);
+
+        function generateCode() {
+            const description = document.getElementById('inputDescription').value.trim();
+            if (!description) {
+                alert('Silakan masukkan deskripsi terlebih dahulu!');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('generateText').classList.add('hidden');
+            document.getElementById('loadingText').classList.remove('hidden');
+            document.getElementById('generateBtn').disabled = true;
+
+            // Simulate generation delay
+            setTimeout(() => {
+                let generatedCode = '';
+                
+                if (currentGenerator === 'canva') {
+                    generatedCode = generateCanvaCode(description);
+                } else if (currentGenerator === 'appscript') {
+                    generatedCode = generateAppScript(description);
+                } else {
+                    generatedCode = generatePrompt(description);
+                }
+                
+                document.getElementById('codeOutput').textContent = generatedCode;
+                
+                // Reset loading state
+                document.getElementById('generateText').classList.remove('hidden');
+                document.getElementById('loadingText').classList.add('hidden');
+                document.getElementById('generateBtn').disabled = false;
+            }, 2000);
+        }
+
+        function generateCanvaCode(description) {
+            const responsive = document.getElementById('responsive').checked;
+            const animations = document.getElementById('animations').checked;
+            const darkMode = document.getElementById('darkMode').checked;
+            const interactive = document.getElementById('interactive').checked;
+
+            return `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { box-sizing: border-box; }
+        ${animations ? '.animate-fade-in { animation: fadeIn 0.5s ease-in; }' : ''}
+        ${animations ? '@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }' : ''}
+    </style>
+</head>
+<body class="${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-4${animations ? ' animate-fade-in' : ''}">
+                ${description.split(' ').slice(0, 3).join(' ')} App
+            </h1>
+            <p class="text-gray-600${darkMode ? ' text-gray-400' : ''}">
+                Generated based on: ${description}
+            </p>
+        </header>
+        
+        <main class="max-w-4xl mx-auto">
+            <div class="grid ${responsive ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-3'} gap-6">
+                <div class="bg-white${darkMode ? ' bg-gray-800' : ''} p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Feature 1</h3>
+                    <p class="mb-4">Implementasi fitur utama dari deskripsi Anda.</p>
+                    ${interactive ? '<button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors" onclick="handleAction(1)">Action 1</button>' : ''}
+                </div>
+                
+                <div class="bg-white${darkMode ? ' bg-gray-800' : ''} p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Feature 2</h3>
+                    <p class="mb-4">Fitur tambahan sesuai kebutuhan aplikasi.</p>
+                    ${interactive ? '<button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors" onclick="handleAction(2)">Action 2</button>' : ''}
+                </div>
+                
+                <div class="bg-white${darkMode ? ' bg-gray-800' : ''} p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Feature 3</h3>
+                    <p class="mb-4">Fitur pelengkap untuk pengalaman pengguna yang optimal.</p>
+                    ${interactive ? '<button class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors" onclick="handleAction(3)">Action 3</button>' : ''}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    ${interactive ? `<script>
+        function handleAction(actionId) {
+            console.log('Action ' + actionId + ' executed');
+            // Implementasi logika sesuai deskripsi: ${description}
+            alert('Feature ' + actionId + ' berhasil dijalankan!');
+        }
+    </script>` : ''}
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98eae67ae1cbef71',t:'MTc2MDQ4NTAwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>`;
+        }
+
+        function generateAppScript(description) {
+            const scriptType = document.getElementById('scriptType').value;
+            
+            let baseCode = '';
+            
+            switch(scriptType) {
+                case 'sheets':
+                    baseCode = `/**
+ * Google Sheets Script - ${description}
+ * Generated automatically
+ */
+
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('Custom Menu')
+    .addItem('Run Main Function', 'mainFunction')
+    .addItem('Process Data', 'processData')
+    .addToUi();
+}
+
+function mainFunction() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  
+  // Implementasi berdasarkan: ${description}
+  Logger.log('Processing ' + data.length + ' rows');
+  
+  // Contoh pengolahan data
+  for (let i = 1; i < data.length; i++) {
+    // Logika sesuai kebutuhan
+    Logger.log('Processing row: ' + (i + 1));
+  }
+  
+  SpreadsheetApp.getUi().alert('Process completed successfully!');
+}
+
+function processData() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const range = sheet.getRange('A:Z');
+  const values = range.getValues();
+  
+  // Custom processing logic here
+  // Based on: ${description}
+  
+  Logger.log('Data processing completed');
+}`;
+                    break;
+                    
+                case 'gmail':
+                    baseCode = `/**
+ * Gmail Script - ${description}
+ * Generated automatically
+ */
+
+function processEmails() {
+  const threads = GmailApp.search('is:unread', 0, 50);
+  
+  threads.forEach(thread => {
+    const messages = thread.getMessages();
+    
+    messages.forEach(message => {
+      if (message.isUnread()) {
+        // Implementasi berdasarkan: ${description}
+        Logger.log('Processing email: ' + message.getSubject());
+        
+        // Contoh: Mark as read
+        message.markRead();
+      }
+    });
+  });
+  
+  Logger.log('Email processing completed');
+}
+
+function sendCustomEmail() {
+  const recipient = 'example@email.com';
+  const subject = 'Automated Email';
+  const body = 'This email was generated based on: ${description}';
+  
+  GmailApp.sendEmail(recipient, subject, body);
+  Logger.log('Email sent successfully');
+}
+
+function createEmailFilter() {
+  // Create custom email filters
+  // Implementation based on: ${description}
+  Logger.log('Email filter created');
+}`;
+                    break;
+                    
+                default:
+                    baseCode = `/**
+ * Google Apps Script - ${description}
+ * Generated automatically
+ */
+
+function main() {
+  // Main function implementation
+  // Based on description: ${description}
+  
+  Logger.log('Script execution started');
+  
+  try {
+    // Your custom logic here
+    processRequest();
+    Logger.log('Script completed successfully');
+  } catch (error) {
+    Logger.log('Error: ' + error.toString());
+  }
+}
+
+function processRequest() {
+  // Implementation based on: ${description}
+  
+  // Example processing logic
+  const data = getData();
+  const processedData = transformData(data);
+  saveResults(processedData);
+}
+
+function getData() {
+  // Fetch data logic
+  return [];
+}
+
+function transformData(data) {
+  // Transform data logic
+  return data;
+}
+
+function saveResults(data) {
+  // Save results logic
+  Logger.log('Results saved: ' + data.length + ' items');
+}`;
+            }
+            
+            return baseCode;
+        }
+
+        function generatePrompt(description) {
+            const promptType = document.getElementById('promptType').value;
+            
+            let prompt = '';
+            
+            switch(promptType) {
+                case 'canva':
+                    prompt = `# Canva Code Generation Prompt
+
+## Objective
+Create a fully functional, interactive web application based on the following description:
+
+**Description:** ${description}
+
+## Requirements
+- Use HTML5, CSS3, and vanilla JavaScript
+- Implement Tailwind CSS for styling
+- Ensure responsive design (mobile-first approach)
+- Add smooth animations and transitions
+- Include interactive elements and user feedback
+- Follow modern web development best practices
+- Ensure accessibility (ARIA labels, keyboard navigation)
+
+## Specific Features to Include
+1. Clean, modern UI design
+2. Functional buttons and forms
+3. Data persistence (localStorage)
+4. Error handling and validation
+5. Loading states and feedback messages
+6. Mobile-responsive layout
+
+## Code Structure
+- Single HTML file with inline CSS and JavaScript
+- Modular JavaScript functions
+- Clean, commented code
+- Professional styling with consistent spacing
+
+## Additional Considerations
+- Use semantic HTML elements
+- Implement proper form validation
+- Add hover effects and micro-interactions
+- Ensure cross-browser compatibility
+- Include proper meta tags for SEO
+
+Please generate a complete, working web application that fulfills all these requirements.`;
+                    break;
+                    
+                case 'appscript':
+                    prompt = `# Google Apps Script Generation Prompt
+
+## Objective
+Create a Google Apps Script solution for the following requirement:
+
+**Description:** ${description}
+
+## Technical Requirements
+- Use Google Apps Script (JavaScript ES5 compatible)
+- Implement proper error handling and logging
+- Follow Google Apps Script best practices
+- Include user-friendly UI elements where applicable
+- Add comprehensive comments and documentation
+
+## Integration Points
+- Google Sheets integration (if applicable)
+- Gmail integration (if applicable)
+- Google Drive integration (if applicable)
+- Calendar integration (if applicable)
+- Forms integration (if applicable)
+
+## Code Structure
+- Main execution function
+- Helper functions for specific tasks
+- Error handling with try-catch blocks
+- Logging for debugging and monitoring
+- User interface elements (menus, dialogs)
+
+## Security & Performance
+- Implement proper authorization scopes
+- Use efficient API calls
+- Batch operations where possible
+- Handle rate limits appropriately
+- Validate user inputs
+
+## Documentation
+- Function descriptions
+- Parameter explanations
+- Usage examples
+- Setup instructions
+
+Please generate a complete Google Apps Script solution with all necessary functions and proper documentation.`;
+                    break;
+                    
+                case 'creative':
+                    prompt = `# Creative AI Prompt Generator
+
+## Context
+Generate creative content based on: ${description}
+
+## Creative Direction
+- Think outside the box
+- Incorporate unique perspectives
+- Use vivid, descriptive language
+- Create engaging narratives
+- Include sensory details
+- Build emotional connections
+
+## Structure Guidelines
+- Hook the audience immediately
+- Develop ideas progressively
+- Use varied sentence structures
+- Include specific examples
+- Create memorable moments
+- End with impact
+
+## Tone & Style
+- Authentic and original voice
+- Appropriate for target audience
+- Consistent throughout
+- Engaging and conversational
+- Professional yet approachable
+
+## Content Elements
+- Clear value proposition
+- Compelling storytelling
+- Actionable insights
+- Relevant examples
+- Strong call-to-action
+
+Please create compelling, original content that captures attention and delivers value.`;
+                    break;
+                    
+                default:
+                    prompt = `# General AI Assistant Prompt
+
+## Task Description
+${description}
+
+## Instructions
+Please provide a comprehensive response that addresses all aspects of the request. Consider the following:
+
+1. **Accuracy**: Ensure all information is correct and up-to-date
+2. **Completeness**: Cover all relevant aspects of the topic
+3. **Clarity**: Use clear, understandable language
+4. **Structure**: Organize information logically
+5. **Practicality**: Provide actionable advice where applicable
+
+## Response Format
+- Use clear headings and subheadings
+- Include bullet points for lists
+- Provide examples where helpful
+- Add relevant context and background
+- Conclude with key takeaways
+
+## Quality Standards
+- Fact-check all claims
+- Cite sources when appropriate
+- Consider multiple perspectives
+- Provide balanced viewpoints
+- Include disclaimers if necessary
+
+Please generate a thorough, helpful response that fully addresses the request.`;
+            }
+            
+            return prompt;
+        }
+
+        // Template buttons
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const title = this.querySelector('.text-white').textContent;
+                let templateDescription = '';
+                
+                if (title.includes('Todo List')) {
+                    templateDescription = 'Buat aplikasi todo list dengan fitur tambah tugas baru, edit tugas yang ada, hapus tugas, tandai sebagai selesai, dan filter berdasarkan status (semua, aktif, selesai). Gunakan desain modern dengan animasi smooth.';
+                } else if (title.includes('Dashboard')) {
+                    templateDescription = 'Buat dashboard analytics dengan chart interaktif, statistik real-time, tabel data, filter tanggal, dan export data. Gunakan warna yang profesional dan layout yang responsive.';
+                } else if (title.includes('E-commerce')) {
+                    templateDescription = 'Buat keranjang belanja dengan daftar produk, tambah ke keranjang, ubah quantity, hapus item, hitung total, dan form checkout. Sertakan validasi form dan konfirmasi pembelian.';
+                } else if (title.includes('Email Automation')) {
+                    templateDescription = 'Buat script Google Apps Script untuk otomasi email Gmail: kirim email otomatis berdasarkan kondisi tertentu, buat template email, dan jadwalkan pengiriman email berkala.';
+                } else if (title.includes('Sheets Data')) {
+                    templateDescription = 'Buat script Google Apps Script untuk mengolah data di Google Sheets: import data dari sumber eksternal, validasi data, buat laporan otomatis, dan export ke format lain.';
+                } else if (title.includes('AI Prompt')) {
+                    templateDescription = 'Buat generator prompt AI yang dapat membuat prompt berkualitas tinggi untuk berbagai keperluan: coding, creative writing, business analysis, dan problem solving.';
+                }
+                
+                document.getElementById('inputDescription').value = templateDescription;
+            });
+        });
+
+        // Copy button
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const code = document.getElementById('codeOutput').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                this.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    this.textContent = '📋 Copy';
+                }, 2000);
+            });
+        });
+
+        // Download button
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const code = document.getElementById('codeOutput').textContent;
+            let filename = 'generated-code.txt';
+            let mimeType = 'text/plain';
+            
+            if (currentGenerator === 'canva') {
+                filename = 'canva-code.html';
+                mimeType = 'text/html';
+            } else if (currentGenerator === 'appscript') {
+                filename = 'appscript-code.js';
+                mimeType = 'text/javascript';
+            } else {
+                filename = 'ai-prompt.txt';
+            }
+            
+            const blob = new Blob([code], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // Clear all button
+        document.getElementById('clearAll').addEventListener('click', function() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua input dan output?')) {
+                document.getElementById('inputDescription').value = '';
+                document.getElementById('codeOutput').textContent = '// Generated code akan muncul di sini...\n// Pilih generator dan masukkan deskripsi untuk memulai!';
+            }
+        });
+    </script>
+</body>
+</html>
